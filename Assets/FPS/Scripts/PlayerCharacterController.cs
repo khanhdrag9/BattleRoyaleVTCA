@@ -380,7 +380,7 @@ public class PlayerCharacterController : MonoBehaviour
         {
             m_Controller.height = m_TargetCharacterHeight;
             m_Controller.center = Vector3.up * m_Controller.height * 0.5f;
-            playerCamera.transform.localPosition = Vector3.up * m_TargetCharacterHeight * cameraHeightRatio;
+            playerCamera.transform.localPosition = GetCameraLocalPosition();
             m_Actor.aimPoint.transform.localPosition = m_Controller.center;
         }
         // Update smooth height
@@ -389,9 +389,14 @@ public class PlayerCharacterController : MonoBehaviour
             // resize the capsule and adjust camera position
             m_Controller.height = Mathf.Lerp(m_Controller.height, m_TargetCharacterHeight, crouchingSharpness * Time.deltaTime);
             m_Controller.center = Vector3.up * m_Controller.height * 0.5f;
-            playerCamera.transform.localPosition = Vector3.Lerp(playerCamera.transform.localPosition, Vector3.up * m_TargetCharacterHeight * cameraHeightRatio, crouchingSharpness * Time.deltaTime);
+            playerCamera.transform.localPosition = Vector3.Lerp(playerCamera.transform.localPosition, GetCameraLocalPosition(), crouchingSharpness * Time.deltaTime);
             m_Actor.aimPoint.transform.localPosition = m_Controller.center;
         }
+    }
+
+    Vector3 GetCameraLocalPosition()
+    {
+        return  new Vector3(0, 0, playerCamera.transform.localPosition.z) + Vector3.up * m_TargetCharacterHeight * cameraHeightRatio;
     }
 
     // returns false if there was an obstruction
