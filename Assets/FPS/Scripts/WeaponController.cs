@@ -105,8 +105,10 @@ public class WeaponController : MonoBehaviour
     public float currentCharge { get; private set; }
     public Vector3 muzzleWorldVelocity { get; private set; }
     public float GetAmmoNeededToShoot() => (shootType != WeaponShootType.Charge ? 1 : ammoUsedOnStartCharge) / maxAmmo;
+    public string AmmoDisplay => $"{m_CurrentAmmo}/{maxAmmo}"; 
 
     AudioSource m_ShootAudioSource;
+    bool isReloading = false;
 
     const string k_AnimAttackParameter = "Attack";
 
@@ -121,9 +123,9 @@ public class WeaponController : MonoBehaviour
 
     void Update()
     {
-        UpdateAmmo();
+        //UpdateAmmo();
 
-        UpdateCharge();
+        //UpdateCharge();
 
         if (Time.deltaTime > 0)
         {
@@ -132,6 +134,8 @@ public class WeaponController : MonoBehaviour
         }
     }
 
+    /* UpdateAmmo, UpdateCharge
+    //Dont need auto reload
     void UpdateAmmo()
     {
         if (m_LastTimeShot + ammoReloadDelay < Time.time && m_CurrentAmmo < maxAmmo && !isCharging)
@@ -159,6 +163,7 @@ public class WeaponController : MonoBehaviour
         }
     }
 
+    //Dont need charge
     void UpdateCharge()
     {
         if (isCharging)
@@ -193,6 +198,7 @@ public class WeaponController : MonoBehaviour
             }
         }
     }
+    */
 
     public void ShowWeapon(bool show)
     {
@@ -249,7 +255,7 @@ public class WeaponController : MonoBehaviour
 
     bool TryShoot()
     {
-        if (m_CurrentAmmo >= 1f 
+        if (!isReloading && m_CurrentAmmo >= 1f 
             && m_LastTimeShot + delayBetweenShots < Time.time)
         {
             HandleShoot();
@@ -340,5 +346,19 @@ public class WeaponController : MonoBehaviour
         Vector3 spreadWorldDirection = Vector3.Slerp(shootTransform.forward, UnityEngine.Random.insideUnitSphere, spreadAngleRatio);
 
         return spreadWorldDirection;
+    }
+
+    public void ReloadAmmo()
+    {
+        isReloading = true;
+        Invoke("DoneReload", ammoReloadDelay);
+    }
+
+    //it will be called from animator in the future when have animation
+    private void DoneReload()
+    {
+        isReloading = false;
+        m_CurrentAmmo = maxAmmo;
+        m_LastTimeShot = Time.time;
     }
 }

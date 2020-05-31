@@ -107,6 +107,10 @@ public class PlayerWeaponsManager : MonoBehaviour
         // shoot handling
         WeaponController activeWeapon = GetActiveWeapon();
 
+        bool isReload = m_InputHandler.GetReloadAmmoInput();
+        if (activeWeapon && isReload)
+            activeWeapon.ReloadAmmo();
+
         if (activeWeapon && m_WeaponSwitchState == WeaponSwitchState.Up)
         {
             // handle aiming down sights

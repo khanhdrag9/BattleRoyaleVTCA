@@ -198,6 +198,16 @@ public class PlayerInputHandler : MonoBehaviour
         return 0;
     }
 
+    public bool GetReloadAmmoInput()
+    {
+        if (CanProcessInput())
+        {
+            return Input.GetButtonDown(GameConstants.k_ButtonReloadAmmo);
+        }
+
+        return false;
+    }
+
     float GetMouseOrStickLookAxis(string mouseInputName, string stickInputName)
     {
         if (CanProcessInput())
